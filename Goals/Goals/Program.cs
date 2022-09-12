@@ -4,6 +4,7 @@ string? newGoal = Console.ReadLine();
 bool saveGoal = false;
 if (newGoal != null)
 {
+    newGoal = newGoal.Substring(0, Math.Min(256, newGoal.Length));
     Console.WriteLine($"For {DateTime.Today} your goal is: \n {newGoal} \n Save Changes? (Y/N)");
     string? saveString = Console.ReadLine();
     if (saveString == null)
@@ -13,7 +14,7 @@ if (newGoal != null)
     }
     else if (saveString.ToLower() == "y" || saveString.ToLower() == "yes")
     {
-        saveGoal = true;
+        
     }
 }
 else
