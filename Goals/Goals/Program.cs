@@ -1,4 +1,6 @@
-﻿Console.WriteLine("Enter your goal for today:");
+﻿using System;
+
+Console.WriteLine("Enter your goal for today:");
 string? newGoal = Console.ReadLine();
 
 bool saveGoal = false;
@@ -10,11 +12,12 @@ if (newGoal != null)
     if (saveString == null)
     {
         Console.WriteLine("Please enter a response:");
-        return;
+        
     }
     else if (saveString.ToLower() == "y" || saveString.ToLower() == "yes")
     {
         
+       
     }
 }
 else
