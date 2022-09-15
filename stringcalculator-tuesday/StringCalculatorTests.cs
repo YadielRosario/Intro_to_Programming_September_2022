@@ -14,6 +14,17 @@ public class StringCalculatorTests
     }
 
     [Fact]
+    public void SingleDigitReturnsThatNumber()
+    {
+        var calculator = new StringCalculator();
+
+        var result = calculator.Add("1");
+
+        Assert.Equal(1, result);
+    }
+     
+
+    [Fact]
     public void AddMoreThanTwoNumbers()
     {
         var calculator = new StringCalculator();

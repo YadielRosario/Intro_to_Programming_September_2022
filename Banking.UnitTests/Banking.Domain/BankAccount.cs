@@ -2,14 +2,20 @@
 
 public class BankAccount
 {
-    private decimal _balance = 5000M;
-    public BankAccount()
+    private readonly ICalculateAccountBonuses _bonusCalculator;
+
+    public BankAccount(ICalculateAccountBonuses bonusCalculator)
     {
+        _bonusCalculator = bonusCalculator;
     }
 
+    private decimal _balance = 5000M; //JFHCI
     public void Deposit(decimal amountToDeposit)
     {
-        _balance += amountToDeposit;
+        // Write the Code You Wish You Had
+
+        decimal bonus = _bonusCalculator.GetBonusForDepositOnAccount(100000, amountToDeposit);
+        _balance += amountToDeposit + bonus;
     }
 
     public decimal GetBalance()
@@ -19,14 +25,18 @@ public class BankAccount
 
     public void Withdraw(decimal amountToWithdraw)
     {
-        if (amountToWithdraw <= _balance)
+        if (AccountHasAvailableFunds(amountToWithdraw))
         {
-            _balance -= amountToWithdraw; 
+            _balance -= amountToWithdraw;
         }
         else
         {
             throw new OverdraftException();
         }
-        
+    }
+
+    private bool AccountHasAvailableFunds(decimal amountToWithdraw)
+    {
+        return amountToWithdraw <= _balance;
     }
 }

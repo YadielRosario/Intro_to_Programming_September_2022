@@ -5,15 +5,16 @@ namespace Banking.UnitTests;
 public class AccountDeposits
 {
     [Fact]
-    public void MakeADepositIncreasesTheBalance()
+    public void MakingADepositIncreasesTheBalance()
     {
-        //Given
-        var account = new BankAccount();
+        // Given
+        var account = new BankAccount(new DummyBonusCalculator());
         var openingBalance = account.GetBalance();
-        var amountToDeposit = 10.15M; //M changes the variable from a double to a decimal
-        //When
+        var amountToDeposit = 10.15M; // I'll explain that "M"
+
+        // When
         account.Deposit(amountToDeposit);
-        //Then
+        // Then
         Assert.Equal(openingBalance + amountToDeposit, account.GetBalance());
     }
 }
