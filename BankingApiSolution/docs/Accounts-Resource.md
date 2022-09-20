@@ -5,28 +5,32 @@ Development authority: http://localhost:9000
 
 ### GET /accounts
 
+
 ```json
 {
 
-    "data":
-        {"id": "89898", "name": "Bob Smith"},
-        {"id": "89393", "name": "Barb Watson"}
-    
+    "data": [
+        {"id": "89898", "name": "Bob Smith" },
+        {"id": "89393", "name": "Barb Watson" }
+
+    ]
 }
+
 ```
+
+
 ### GET /accounts/{id}
 
-GET /accounts/89898/balance
+GET /accounts/89898
 
-```json
+```json 
 {
     "id": "89898",
     "name": "Bob Smith",
-}
-```
-
-### POST /account
-
-{
     
 }
+
+```
+### POST /account
+
+{}

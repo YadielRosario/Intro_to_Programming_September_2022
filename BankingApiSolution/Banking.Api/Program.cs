@@ -1,6 +1,5 @@
 using Banking.Api.Adapters;
 using Banking.Api.Domain;
-using MongoDB.Driver.Core.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,12 +11,16 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddTransient<AccountManager>();
-
-builder.Services.AddSingleton<MongoAccountsAdapter>(sp =>
-{    var connectionString = "mongodb://root:TokyoJoe138!@localhost:27017"; return new MongoAccountsAdapter(connectionString);
+builder.Services.AddTransient<ISystemTime, SystemTime>();
+builder.Services.AddHttpClient<IBonusCalculatorApiAdapter, BonusCalculatorApiAdapter>(client =>
+{
+    client.BaseAddress = new Uri(builder.Configuration.GetValue<string>("bonus-api"));
 });
-
-
+builder.Services.AddSingleton<MongoAccountsAdapter>(sp =>
+{
+    var connectionString = builder.Configuration.GetConnectionString("mongo");
+    return new MongoAccountsAdapter(connectionString);
+});
 
 var app = builder.Build();
 
@@ -32,4 +35,4 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.Run(); // this is when the API is up and running
+app.Run();// this is when the api is up and running.

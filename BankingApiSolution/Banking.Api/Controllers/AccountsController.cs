@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Banking.Api.Controllers;
 
+[Produces("application/json")]
+
 public class AccountsController : ControllerBase
 {
     private readonly AccountManager _accountManager;
@@ -13,31 +15,25 @@ public class AccountsController : ControllerBase
         _accountManager = accountManager;
     }
 
+
+
     // GET /accounts
 
     [HttpGet("/accounts")]
-    public async Task<ActionResult> GetAllAccounts()
+    public async Task<ActionResult<AccountSummaryResponse>> GetAllAccounts()
     {
-        //var response = new CollectionResponse<AccountSummaryResponse>
-        //{
-        //    Data = new List<AccountSummaryResponse>
-        //    {
-        //        new AccountSummaryResponse {Id = "1", Name= "Bob Smith"},
-        //        new AccountSummaryResponse {Id = "2", Name= "Jill Jones"}
-        //    }
-        //};
-        CollectionResponse<AccountSummaryResponse> response = response = await _accountManager.GetAllAccountsAsync();
+        CollectionResponse<AccountSummaryResponse> response = await _accountManager.GetAllAccountsAsync();
         return Ok(response); // return a 200 Ok status code.
     }
 
     // GET /accounts
-    [HttpGet("/accounts/{id}", Name = "get-account-by-id")]
-    public async Task<ActionResult> GetAccountById(string id)
+    [HttpGet("/accounts/{id}", Name ="get-account-by-id")]
+    public async Task<ActionResult<AccountSummaryResponse>> GetAccountById(string id)
     {
-        //var response = new AccountSummaryResponse { Id = id, Name = "Bob Smith" };
-        AccountSummaryResponse response = await _accountManager.GetAccountByIdAsync(id);
+        
+        AccountSummaryResponse? response = await _accountManager.GetAccountByIdAsync(id);
 
-        if(response is null)
+        if (response is null)
         {
             return NotFound();
         }
@@ -45,27 +41,45 @@ public class AccountsController : ControllerBase
         {
             return Ok(response);
         }
-        
     }
+
     [HttpPost("/accounts")]
-    public async Task<ActionResult> AddAnAccount([FromBody] AccountCreateRequest request)
+    public async Task<ActionResult<AccountSummaryResponse>> AddAnAccount([FromBody] AccountCreateRequest request)
     {
-        //validate it
-        // if bad, return 400
-        // save it to the databaser or whatever
-        // return a 201 Created status code
-        // return a location header with the URI of the brand new thing (account)
-        // and give them a copy of what they would get if they did a request on that location header.
-
-        //var response = new AccountSummaryResponse
-        //{
-        //    Id = Guid.NewGuid().ToString(),
-        //    Name = request.Name
-
-        //};
 
         AccountSummaryResponse response = await _accountManager.CreateAccountAsync(request);
 
         return CreatedAtRoute("get-account-by-id", new { id = response.Id }, response);
+
     }
+
+    [HttpGet("/accounts/{accountNumber}/balance")]
+    public async Task<ActionResult<AccountSummaryResponse>> GetAccountBalance(string accountNumber)
+    {
+        //var balance = new AccountBalanceResponse { Balance = 42 };
+        AccountBalanceResponse? balance = await _accountManager.GetBalanceForAccountAsync(accountNumber);
+       if(balance is null)
+        {
+            return NotFound();
+        } else
+        {
+            return Ok(balance);
+        }
+    }
+
+    [HttpPost("/accounts/{accountNumber}/deposits")]
+    public async Task<ActionResult<AccountSummaryResponse>> AddDeposit([FromBody] AccountTransactionRequest deposit, string accountNumber)
+    {
+
+        AccountTransactionResponse? response = await _accountManager.DepositAsync(accountNumber, deposit);
+        if(response is null)
+        {
+            return NotFound();
+        } else
+        {
+            return StatusCode(201, response);
+        }
+    }
+
+  
 }
